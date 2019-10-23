@@ -1,6 +1,6 @@
 {
   "name": "rio-azure-login",
-  "version": "2.0.0",
+  "version": "1.9.0",
   "description": "Use Azure AD SSO to log into the AWS CLI.",
   "main": "index.js",
   "author": "Dave T. Johnson <dave@dtjohnson.net>",
@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sportradar/aws-azure-login.git"
+    "url": "https://github.com/rioclaid/aws-azure-login.git"
   },
-  "bugs": "https://github.com/sportradar/aws-azure-login/issues"
+  "bugs": "https://github.com/rioclaid/aws-azure-login/issues"
 }
