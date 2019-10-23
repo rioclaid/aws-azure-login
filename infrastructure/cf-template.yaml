@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Container registry for aws-azure-login tool.
+Metadata: {}
+Parameters:
+  OrganizationId:
+    Description: Organization ID allowed to read aws-azure-login tool.
+    Type: String
+
+Resources:
+  RepositoryAzureLogin:
+    Type: 'AWS::ECR::Repository'
+    Properties:
+      RepositoryName: claid/rio-azure-login
+      RepositoryPolicyText:
+        Version: 2008-10-17
+        Statement:
+          - Sid: AllowPull
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - 'ecr:GetDownloadUrlForLayer'
+              - 'ecr:BatchGetImage'
+            Condition:
+              StringEquals:
+                "aws:PrincipalOrgID":
+                  - !Ref OrganizationId
+          - Sid: AllowPush
+            Effect: Allow
+            Principal:
+              AWS:
+                - !Sub 'arn:aws:iam::898494901065:role/rio-admin-role'
+            Action:
+              - 'ecr:GetDownloadUrlForLayer'
+              - 'ecr:BatchGetImage'
+              - 'ecr:BatchCheckLayerAvailability'
+              - 'ecr:PutImage'
+              - 'ecr:InitiateLayerUpload'
+              - 'ecr:UploadLayerPart'
+              - 'ecr:CompleteLayerUpload'
+            Condition:
+              StringEquals:
+                "aws:PrincipalOrgID":
+                  - !Ref OrganizationId

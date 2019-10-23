@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...   
+      - cd docker
+      - docker build -t rio-azure-login:latest .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker tag rio-azure-login:latest riothelogisticsflow/aws-azure-login:$IMAGE_TAG
+      - docker images 
+      - docker login --username=$(aws ssm get-parameter --name '/rio/config/dockerhub/username' | jq '.Parameter.Value'| cut -d '"' -f 2) --password=$(aws ssm get-parameter --with-decryption --name '/rio/config/dockerhub/password' | jq '.Parameter.Value'| cut -d '"' -f 2)
+      - docker push riothelogisticsflow/aws-azure-login:$IMAGE_TAG
